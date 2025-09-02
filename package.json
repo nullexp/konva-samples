@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "konva": "^9.3.22"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
+}
