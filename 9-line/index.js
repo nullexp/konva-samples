@@ -10,20 +10,21 @@ let layer = new Konva.Layer();
 stage.add(layer);
 
 var currentLine = null;
-var isDrawing =false
-function createLine(x,y){
-    let line = new Konva.Line({
-        points: [x, y],
-        stroke: 'red',
-        strokeWidth: 4,
-        lineCap: 'round',
-        lineJoin: 'round',
-        closed: false,
-        draggable: true
-    })
-    currentLine = line;
-    layer.add(line);
- 
+var isDrawing = false
+function createLine(x, y) {
+  console.log('creating line at ',x,y)
+  let line = new Konva.Line({
+    points: [x, y,x,y],
+    stroke: 'red',
+    strokeWidth: 4,
+    lineCap: 'round',
+    lineJoin: 'round',
+    closed: false,
+    draggable: false
+  })
+  currentLine = line;
+  layer.add(line);
+
 }
 
 function intersects(points) {
@@ -84,38 +85,40 @@ function intersects(points) {
 
 
 // on user click
-stage.on("click", function(e){
-  console.log("click");
-    let pos = stage.getPointerPosition();
+stage.on("click", function (e) {
+  console.log("click",e);
+  let pos = stage.getPointerPosition();
+  isDrawing = true
+  if (currentLine == null) {
+    console.log('creating line')
+    createLine(pos.x, pos.y);
     isDrawing=true
+  } else {
+    var points = currentLine.points();
+    console.log(points);
+    points.push(pos.x, pos.y);
 
-    if (currentLine == null){
-        createLine(pos.x, pos.y);
-    }else{
-      var points = currentLine.points();
-      console.log(points);
-      points.push(pos.x, pos.y);
 
-      
-    if(points.length>6&& intersects(points)){
+    if (points.length > 6 && intersects(points)) {
       console.log("intersects");
       currentLine.closed(true);
-      currentLine=null;
-      isDrawing=false;
+      currentLine = null;
+      isDrawing = false;
     }
-    }
+  }
 });
 
-stage.on("mousemove", function(e){
-  console.log(isDrawing && currentLine);
-  if(isDrawing){
+stage.on("mousemove", function (e) {
+  
+  if (isDrawing) {
 
     let pos = stage.getPointerPosition();
     // change last points of currentLine to pos
     var points = currentLine.points();
-    points[points.length-2] = pos.x;
-    points[points.length-1] = pos.y;
+    points[points.length - 2] = pos.x;
+    points[points.length - 1] = pos.y;
     currentLine.points(points);
+    console.log(points)
   }
 });
 
@@ -127,4 +130,4 @@ stage.on("mousemove", function(e){
 //   closed: false,
 //   tension: 0.3,
 // });
- 
+
